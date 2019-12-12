@@ -6,11 +6,12 @@
 //  Copyright © 2019 Pedro José Pereira Vieito. All rights reserved.
 //
 
+import Foundation
 import PythonKit
 import MoreCodable
 
 public struct PythonDecoder {
-    static func decode<T: Decodable>(_ type: T.Type, from pythonObject: PythonObject) throws -> T {
+    public static func decode<T: Decodable>(_ type: T.Type, from pythonObject: PythonObject) throws -> T {
         let decodableDictionary = try pythonObject.bridgeToDecodableDictionary()
         return try DictionaryDecoder().decode(type, from: decodableDictionary)
     }
@@ -25,7 +26,7 @@ extension PythonObject {
         return String(self)!
     }
     
-    func bridgeToDecodableDictionaryValue() throws -> Any? {
+    func bridgeToDecodableValue() throws -> Any? {
         if self.isPythonString {
             return String(self)!
         }
@@ -41,7 +42,10 @@ extension PythonObject {
         else if self.isPythonNone {
             return nil
         }
-        else if self.isPythonDictionary {
+        else if self.isPythonListOrListConvertible {
+            return try self.bridgeToDecodableArray()
+        }
+        else if self.isPythonDictionaryOrDictionaryConvertible {
             return try self.bridgeToDecodableDictionary()
         }
         else {
@@ -49,16 +53,27 @@ extension PythonObject {
         }
     }
     
-    func bridgeToDecodableDictionary() throws -> Dictionary<String, Any?> {
+    func bridgeToDecodableArray() throws -> Array<Any?> {
+        let pythonList = try self.convertToPythonList()
+        var bridgedArray: [Any?] = []
+        
+        for item in pythonList {
+            let bridgedValue = try item.bridgeToDecodableValue()
+            bridgedArray.append(bridgedValue)
+        }
+        
+        return bridgedArray
+    }
+    
+    func bridgeToDecodableDictionary() throws -> Dictionary<String, Any> {
         let pythonDictionary = try self.convertToPythonDictionary()
-        var bridgedDictionary: [String : Any?] = [:]
+        var bridgedDictionary: [String : Any] = [:]
         
         for item in pythonDictionary.items() {
             let (key, value) = item.tuple2
             
-            let bridgedKey = try key.bridgeToDecodableDictionaryKey()            
-            if let bridgedValue = try value.bridgeToDecodableDictionaryValue() {
-                bridgedDictionary[bridgedKey] = bridgedValue
+            if key.isPythonString, let bridgedValue = try value.bridgeToDecodableValue() {
+                bridgedDictionary[String(key)!] = bridgedValue
             }
         }
         
@@ -67,6 +82,32 @@ extension PythonObject {
 }
 
 extension PythonObject {
+    var isPythonListOrListConvertible: Bool {
+        return self.isPythonList || self.isPythonListConvertible
+    }
+    
+    var isPythonListConvertible: Bool {
+        return Bool(Python.hasattr(self, "__iter__"))!
+    }
+    
+    func convertToPythonList() throws -> PythonObject {
+        if self.isPythonList {
+            return self
+        }
+        else if self.isPythonListConvertible {
+            return Python.list(pythonObject)
+        }
+        else {
+            throw PythonError.invalidCall(self)
+        }
+    }
+}
+
+extension PythonObject {
+    var isPythonDictionaryOrDictionaryConvertible: Bool {
+        return self.isPythonDictionary || self.isPythonDictionaryConvertible
+    }
+    
     var isPythonDictionaryConvertible: Bool {
         return Bool(Python.hasattr(self, "__dict__"))!
     }
@@ -99,6 +140,10 @@ extension PythonObject {
     
     var isPythonBool: Bool {
         return Bool(Python.isinstance(pythonObject, Python.bool))!
+    }
+    
+    var isPythonList: Bool {
+        return Bool(Python.isinstance(pythonObject, Python.list))!
     }
     
     var isPythonDictionary: Bool {

@@ -14,6 +14,7 @@ let package = Package(
         )
     ],
     dependencies: [
+        .package(url: "https://github.com/pvieito/FoundationKit.git", .branch("master")),
         .package(url: "https://github.com/pvieito/PythonKit.git", .branch("master")),
         .package(url: "https://github.com/tattn/MoreCodable.git", .branch("pull/15/head"))
     ],
@@ -25,7 +26,7 @@ let package = Package(
         ),
         .testTarget(
             name: "PythonCodableTests",
-            dependencies: ["PythonCodable", "PythonKit"]
+            dependencies: ["PythonCodable", "PythonKit", "FoundationKit"]
         )
     ]
 )
