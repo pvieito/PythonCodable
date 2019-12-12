@@ -50,7 +50,7 @@ final class PythonCodableTests: XCTestCase {
     }
     
     static func decodeSwiftTestStruct(pythonObject: PythonObject) throws -> SwiftTestStruct {
-        return try PythonDecoder.decode(SwiftTestStruct.self, pythonObject: pythonObject)
+        return try PythonDecoder.decode(SwiftTestStruct.self, from: pythonObject)
     }
     
     func testPythonDecoder() throws {

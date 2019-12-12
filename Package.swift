@@ -15,7 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pvieito/PythonKit.git", .branch("master")),
-        .package(url: "https://github.com/tattn/MoreCodable.git", from: "1.1.0")
+        .package(url: "https://github.com/pvieito/MoreCodable.git", .branch("master"))
     ],
     targets: [
         .target(
