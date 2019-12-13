@@ -62,4 +62,4 @@ Add the following dependency to your `Package.swift` manifest:
 
 ## References
 
-- [`PythonKit`](https://github.com/pvieito/PythonCodable)
+- [**PythonKit**](https://github.com/pvieito/PythonCodable)
