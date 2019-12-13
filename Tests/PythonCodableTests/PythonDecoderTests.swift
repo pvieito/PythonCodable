@@ -25,9 +25,9 @@ final class PythonDecoderTests: XCTestCase {
         print(pythonParsedURL)               // ParseResult(scheme='http', netloc='www.cwi.nl:80'...
         print(Python.type(pythonParsedURL))  // <class 'urllib.parse.ParseResult'>
 
-        // 2. Define a compatible Swift struct conforming to `Codable`:
+        // 2. Define a compatible Swift struct conforming to `Decodable`:
 
-        struct ParsedURL: Codable, Equatable {
+        struct ParsedURL: Decodable {
             let scheme: String
             let netloc: String
             let path: String
@@ -44,14 +44,9 @@ final class PythonDecoderTests: XCTestCase {
         XCTAssertEqual(parsedURL.netloc, "www.cwi.nl:80")
         XCTAssertEqual(parsedURL.path, "/%7Eguido/Python.html")
 
-        let nativeParsedURL = ParsedURL(
-            scheme: "http",
-            netloc: "www.cwi.nl:80",
-            path: "/%7Eguido/Python.html",
-            params: "",
-            query: "",
-            fragment: "")
-        XCTAssertEqual(parsedURL, nativeParsedURL)
+        XCTAssertEqual(parsedURL.params, "")
+        XCTAssertEqual(parsedURL.query, "")
+        XCTAssertEqual(parsedURL.fragment, "")
     }
     
     func testPythonDecoderTestStruct() throws {

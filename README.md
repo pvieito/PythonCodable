@@ -22,9 +22,9 @@ let pythonParsedURL = urllibParse.urlparse("http://www.cwi.nl:80/%7Eguido/Python
 print(pythonParsedURL)               // ParseResult(scheme='http', netloc='www.cwi.nl:80'...
 print(Python.type(pythonParsedURL))  // <class 'urllib.parse.ParseResult'>
 
-// 2. Define a compatible Swift struct conforming to `Codable`:
+// 2. Define a compatible Swift struct conforming to `Decodable`:
 
-struct ParsedURL: Codable, Equatable {
+struct ParsedURL: Decodable {
     let scheme: String
     let netloc: String
     let path: String
