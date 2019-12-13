@@ -8,7 +8,7 @@ Swift framework to efficiently bridge objects from Python to Swift.
 
 ## Usage
 
-`PythonCodable` builds on `PythonKit` to allow bridging of arbitrary Python objects into Swift types efficiently using `PythonDecoder`:
+`PythonCodable` builds on `PythonKit` to allow bridging arbitrary Python objects into Swift types efficiently using `PythonDecoder`:
 
 ```swift
 import PythonKit
