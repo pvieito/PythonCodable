@@ -16,7 +16,45 @@ final class PythonDecoderTests: XCTestCase {
         return try PythonDecoder.decode(PythonCodableTests.Struct.self, from: pythonObject)
     }
     
-    func testPythonDecoder() throws {
+    func testPythonDecoderTestReadmeExample() throws {
+        // 1. Get a valid Python object:
+
+        let urllibParse = Python.import("urllib.parse")
+        let pythonParsedURL = urllibParse.urlparse("http://www.cwi.nl:80/%7Eguido/Python.html")
+
+        print(pythonParsedURL)               // ParseResult(scheme='http', netloc='www.cwi.nl:80'...
+        print(Python.type(pythonParsedURL))  // <class 'urllib.parse.ParseResult'>
+
+        // 2. Define a compatible Swift struct conforming to `Codable`:
+
+        struct ParsedURL: Codable, Equatable {
+            let scheme: String
+            let netloc: String
+            let path: String
+            let params: String?
+            let query: String?
+            let fragment: String?
+        }
+
+        // 3. Decode the Python object to the Swift strcut using `PythonDecoder`:
+
+        let parsedURL = try PythonDecoder.decode(ParsedURL.self, from: pythonParsedURL)
+
+        XCTAssertEqual(parsedURL.scheme, "http")
+        XCTAssertEqual(parsedURL.netloc, "www.cwi.nl:80")
+        XCTAssertEqual(parsedURL.path, "/%7Eguido/Python.html")
+
+        let nativeParsedURL = ParsedURL(
+            scheme: "http",
+            netloc: "www.cwi.nl:80",
+            path: "/%7Eguido/Python.html",
+            params: "",
+            query: "",
+            fragment: "")
+        XCTAssertEqual(parsedURL, nativeParsedURL)
+    }
+    
+    func testPythonDecoderTestStruct() throws {
         let pyA = try Self.decodeTestStruct(PythonCodableTests.pythonModule.Struct(
             int: 1,
             string: "asb"))

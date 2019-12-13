@@ -108,6 +108,10 @@ extension PythonObject {
         return self.isPythonDictionary || self.isPythonDictionaryConvertible
     }
     
+    var isPythonNamedTupleConvertible: Bool {
+        return Bool(Python.hasattr(self, "_asdict"))!
+    }
+    
     var isPythonDictionaryConvertible: Bool {
         return Bool(Python.hasattr(self, "__dict__"))!
     }
@@ -118,6 +122,9 @@ extension PythonObject {
         }
         else if self.isPythonDictionaryConvertible {
             return Python.vars(pythonObject)
+        }
+        else if self.isPythonNamedTupleConvertible {
+            return Python.dict(pythonObject._asdict())
         }
         else {
             throw PythonError.invalidCall(self)
