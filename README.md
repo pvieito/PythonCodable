@@ -42,7 +42,7 @@ XCTAssertEqual(parsedURL.netloc, "www.cwi.nl:80")
 XCTAssertEqual(parsedURL.path, "/%7Eguido/Python.html")
 ```
 
-`PythonDecoder` supports multiple Python to Swift type conversion:
+`PythonDecoder` supports multiple Python to Swift type conversions:
 
 - `int` to `Int`
 - `float` to `Double`
@@ -50,6 +50,7 @@ XCTAssertEqual(parsedURL.path, "/%7Eguido/Python.html")
 - `None` to `nil`
 - `list[t]` to `Array<T>` where `t` is one of the supported types.
 - `dict[k, v]` to `Dictionary<K, T>` where `k` is a `str` and `v` is one of the supported types.
+- `object` to `Any : Codable` where `object` is a `dict`, a named tuple or an object with a dictionary representation.
 
 ### Swift Package Manager
 
