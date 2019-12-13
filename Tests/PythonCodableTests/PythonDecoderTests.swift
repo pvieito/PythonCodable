@@ -36,7 +36,7 @@ final class PythonDecoderTests: XCTestCase {
             let fragment: String?
         }
 
-        // 3. Decode the Python object to the Swift strcut using `PythonDecoder`:
+        // 3. Decode the Python object as a Swift type using `PythonDecoder`:
 
         let parsedURL = try PythonDecoder.decode(ParsedURL.self, from: pythonParsedURL)
 
