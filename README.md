@@ -50,7 +50,7 @@ XCTAssertEqual(parsedURL.path, "/%7Eguido/Python.html")
 - `None` to `nil`
 - `list[t]` to `Array<T>` where `t` is one of the supported types.
 - `dict[k, v]` to `Dictionary<K, T>` where `k` is a `str` and `v` is one of the supported types.
-- `object` to `Any : Codable` where `object` is a `dict`, a named tuple or an object with a dictionary representation.
+- `object` to `Any : Decodable` where `object` is a `dict`, a named tuple or an object with a dictionary representation.
 
 ### Swift Package Manager
 
@@ -62,4 +62,4 @@ Add the following dependency to your `Package.swift` manifest:
 
 ## References
 
-- [**PythonKit**](https://github.com/pvieito/PythonCodable)
+- [**PythonKit**](https://github.com/pvieito/PythonKit)
