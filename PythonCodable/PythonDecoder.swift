@@ -11,9 +11,28 @@ import PythonKit
 import MoreCodable
 
 public struct PythonDecoder {
+    /// Tries to decodes the input `pythonObject` into the Swift `type` type.
+    /// - Parameters:
+    ///   - type: Decodable Swift type.
+    ///   - pythonObject: Input Python object.
     public static func decode<T: Decodable>(_ type: T.Type, from pythonObject: PythonObject) throws -> T {
         let decodableDictionary = try pythonObject.bridgeToDecodableDictionary()
         return try DictionaryDecoder().decode(type, from: decodableDictionary)
+    }
+}
+
+extension PythonObject {
+    /// Tries to bridge the `PythonObject` into an equivalent Swift type.
+    public func bridgeToSwift() throws -> Any? {
+        return try self.bridgeToDecodableValue()
+    }
+}
+
+extension PythonDecoder {
+    enum Error: Swift.Error {
+        case unsupportedType
+        case unsupportedListType
+        case unsupportedDictionaryType
     }
 }
 
@@ -49,7 +68,7 @@ extension PythonObject {
             return try self.bridgeToDecodableDictionary()
         }
         else {
-            throw PythonError.invalidCall(self)
+            throw PythonDecoder.Error.unsupportedType
         }
     }
     
@@ -98,7 +117,7 @@ extension PythonObject {
             return Python.list(pythonObject)
         }
         else {
-            throw PythonError.invalidCall(self)
+            throw PythonDecoder.Error.unsupportedListType
         }
     }
 }
@@ -127,7 +146,7 @@ extension PythonObject {
             return Python.dict(pythonObject._asdict())
         }
         else {
-            throw PythonError.invalidCall(self)
+            throw PythonDecoder.Error.unsupportedDictionaryType
         }
     }
 }
