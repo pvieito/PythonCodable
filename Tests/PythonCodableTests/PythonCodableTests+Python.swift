@@ -13,7 +13,7 @@ extension PythonCodableTests {
     static let pythonModule: PythonObject = {
         let sys = Python.import("sys")
         sys.path.insert(0, testBundle.resourcePath!)
-        let PythonCodableTests = Python.import("PythonCodableTests")
-        return PythonCodableTests
+        let pythonCodableTestsModule = Python.import("PythonCodableTests")
+        return pythonCodableTestsModule
     }()
 }
