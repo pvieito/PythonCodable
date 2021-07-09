@@ -6,13 +6,18 @@ on:
 
 jobs:
   continuous-integration:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          # - macos-latest
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v1
-      - name: Test
-        run: swift test --enable-test-discovery
+	strategy:
+	  matrix:
+		os:
+		  - ubuntu-latest
+		  - macos-latest
+	runs-on: ${{ matrix.os }}
+	steps:
+	  - name: Install SSH Key
+		uses: shimataro/ssh-key-action@v2
+		with:
+		  key: ${{ secrets.SSH_KEY }}
+		  known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+	  - uses: actions/checkout@v1
+	  - name: Test
+		run: swift test
