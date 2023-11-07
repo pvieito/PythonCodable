@@ -9,5 +9,5 @@
 import Foundation
 
 struct PythonCodableTests {
-    static let testBundle = Bundle.currentModuleBundle()
+    static let testBundle = Bundle.module
 }

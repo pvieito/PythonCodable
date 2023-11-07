@@ -1,11 +1,11 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.7
 
 import PackageDescription
 
 let package = Package(
     name: "PythonCodable",
     platforms: [
-        .macOS(.v10_12)
+        .macOS(.v11)
     ],
     products: [
         .library(
@@ -14,9 +14,9 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "git@github.com:pvieito/FoundationKit.git", .branch("master")),
-        .package(url: "git@github.com:pvieito/PythonKit.git", .branch("master")),
-        .package(url: "https://github.com/tattn/MoreCodable.git", .branch("master")),
+        .package(url: "git@github.com:pvieito/FoundationKit.git", branch: "master"),
+        .package(url: "git@github.com:pvieito/PythonKit.git", branch: "master"),
+        .package(url: "https://github.com/tattn/MoreCodable.git", branch: "master"),
     ],
     targets: [
         .target(
@@ -26,7 +26,8 @@ let package = Package(
         ),
         .testTarget(
             name: "PythonCodableTests",
-            dependencies: ["PythonCodable", "PythonKit", "FoundationKit"]
+            dependencies: ["PythonCodable", "PythonKit", "FoundationKit"],
+            resources: [.process("Resources")]
         )
     ]
 )
