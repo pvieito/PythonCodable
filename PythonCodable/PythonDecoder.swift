@@ -41,10 +41,10 @@ extension PythonObject {
         guard self.isPythonString else {
             throw PythonError.invalidCall(self)
         }
-        
+
         return String(self)!
     }
-    
+
     func bridgeToDecodableValue() throws -> Any? {
         if self.isPythonString {
             return String(self)!
@@ -61,41 +61,42 @@ extension PythonObject {
         else if self.isPythonNone {
             return nil
         }
-        else if self.isPythonListOrListConvertible {
-            return try self.bridgeToDecodableArray()
-        }
+        // Try dictionary before list, since dictionaries are list convertible.
         else if self.isPythonDictionaryOrDictionaryConvertible {
             return try self.bridgeToDecodableDictionary()
+        }
+        else if self.isPythonListOrListConvertible {
+            return try self.bridgeToDecodableArray()
         }
         else {
             throw PythonDecoder.Error.unsupportedType
         }
     }
-    
+
     func bridgeToDecodableArray() throws -> Array<Any?> {
         let pythonList = try self.convertToPythonList()
         var bridgedArray: [Any?] = []
-        
+
         for item in pythonList {
             let bridgedValue = try item.bridgeToDecodableValue()
             bridgedArray.append(bridgedValue)
         }
-        
+
         return bridgedArray
     }
-    
+
     func bridgeToDecodableDictionary() throws -> Dictionary<String, Any> {
         let pythonDictionary = try self.convertToPythonDictionary()
         var bridgedDictionary: [String : Any] = [:]
-        
+
         for item in pythonDictionary.items() {
             let (key, value) = item.tuple2
-            
+
             if key.isPythonString, let bridgedValue = try value.bridgeToDecodableValue() {
                 bridgedDictionary[String(key)!] = bridgedValue
             }
         }
-        
+
         return bridgedDictionary
     }
 }
@@ -104,11 +105,11 @@ extension PythonObject {
     var isPythonListOrListConvertible: Bool {
         return self.isPythonList || self.isPythonListConvertible
     }
-    
+
     var isPythonListConvertible: Bool {
         return Bool(Python.hasattr(self, "__iter__"))!
     }
-    
+
     func convertToPythonList() throws -> PythonObject {
         if self.isPythonList {
             return self
@@ -126,15 +127,15 @@ extension PythonObject {
     var isPythonDictionaryOrDictionaryConvertible: Bool {
         return self.isPythonDictionary || self.isPythonDictionaryConvertible
     }
-    
+
     var isPythonNamedTupleConvertible: Bool {
         return Bool(Python.hasattr(self, "_asdict"))!
     }
-    
+
     var isPythonDictionaryConvertible: Bool {
         return Bool(Python.hasattr(self, "__dict__"))!
     }
-    
+
     func convertToPythonDictionary() throws -> PythonObject {
         if self.isPythonDictionary {
             return self
@@ -155,27 +156,27 @@ extension PythonObject {
     var isPythonString: Bool {
         return Bool(Python.isinstance(pythonObject, Python.str))!
     }
-    
+
     var isPythonInteger: Bool {
         return Bool(Python.isinstance(pythonObject, Python.int))!
     }
-    
+
     var isPythonFloat: Bool {
         return Bool(Python.isinstance(pythonObject, Python.float))!
     }
-    
+
     var isPythonBool: Bool {
         return Bool(Python.isinstance(pythonObject, Python.bool))!
     }
-    
+
     var isPythonList: Bool {
         return Bool(Python.isinstance(pythonObject, Python.list))!
     }
-    
+
     var isPythonDictionary: Bool {
         return Bool(Python.isinstance(pythonObject, Python.dict))!
     }
-    
+
     var isPythonNone: Bool {
         return Bool(Python.isinstance(pythonObject, Python.type(Python.None)))!
     }

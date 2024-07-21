@@ -15,7 +15,11 @@ final class PythonDecoderTests: XCTestCase {
     static func decodeTestStruct(_ pythonObject: PythonObject) throws -> PythonCodableTests.Struct {
         return try PythonDecoder.decode(PythonCodableTests.Struct.self, from: pythonObject)
     }
-    
+
+    static func decodeTestStruct2(_ pythonObject: PythonObject) throws -> PythonCodableTests.Struct2 {
+        return try PythonDecoder.decode(PythonCodableTests.Struct2.self, from: pythonObject)
+    }
+
     func testPythonDecoderTestReadmeExample() throws {
         // 1. Get a valid Python object:
 
@@ -48,7 +52,7 @@ final class PythonDecoderTests: XCTestCase {
         XCTAssertEqual(parsedURL.query, "")
         XCTAssertEqual(parsedURL.fragment, "")
     }
-    
+
     func testPythonDecoderTestStruct() throws {
         let pyA = try Self.decodeTestStruct(PythonCodableTests.pythonModule.Struct(
             int: 1,
@@ -57,7 +61,7 @@ final class PythonDecoderTests: XCTestCase {
             int: 1,
             string: "asb")
         XCTAssertEqual(pyA, swA)
-        
+
         let pyB = try Self.decodeTestStruct(PythonObject([
             "int": -1_993_030_200,
             "string": "TEST_å∫∂ƒñ",
@@ -68,7 +72,7 @@ final class PythonDecoderTests: XCTestCase {
             string: "TEST_å∫∂ƒñ",
             bool: false)
         XCTAssertEqual(pyB, swB)
-        
+
         let pyC = try Self.decodeTestStruct(PythonObject([
             "int": 0,
             "string": Python.None,
@@ -78,7 +82,7 @@ final class PythonDecoderTests: XCTestCase {
             int: 0,
             bool: true)
         XCTAssertEqual(pyC, swC)
-        
+
         let pyD_SSS = PythonCodableTests.pythonModule.Struct.SubStruct.SubSubStruct(string: "0987")
         let swD_SSS = PythonCodableTests.Struct.SubStruct.SubSubStruct(string: "0987")
         let pyD_SS = PythonCodableTests.pythonModule.Struct.SubStruct(
@@ -106,7 +110,31 @@ final class PythonDecoderTests: XCTestCase {
             subStruct: swD_SS)
         XCTAssertEqual(pyD, swD)
     }
-    
+
+    func testArrayOfStructs() throws {
+        let pyMod = PythonCodableTests.pythonModule
+        let pyLS = try Self.decodeTestStruct2(pyMod.Struct2(
+            arrayOfStructs: [pyMod.Struct(int: 1), pyMod.Struct(int: 2)]
+        ))
+        let swLS = PythonCodableTests.Struct2(
+            arrayOfStructs: [PythonCodableTests.Struct(int: 1), PythonCodableTests.Struct(int: 2)]
+        )
+        XCTAssertEqual(pyLS, swLS)
+    }
+
+    func testArrayOfDictionaries() throws {
+        let pyMod = PythonCodableTests.pythonModule
+        let dict1: [String: String] = ["key1": "value1"]
+        let dict2: [String: String] = ["key2": "value2"]
+        let pyLD = try Self.decodeTestStruct2(pyMod.Struct2(
+            arrayOfDicts: [dict1, dict2]
+        ))
+        let swLD = PythonCodableTests.Struct2(
+            arrayOfDicts: [dict1, dict2]
+        )
+        XCTAssertEqual(pyLD, swLD)
+    }
+
     func testPythonDecoderFailures() throws {
         let decodeFailureObjects = [
             PythonObject([]),
@@ -119,7 +147,7 @@ final class PythonDecoderTests: XCTestCase {
             PythonObject(["int": 1, "string": "TEXT", "subStruct": ["bool": "FALSE"]]),
             PythonObject(["int": 1, "string": "TEXT", "subStruct": ["bool": Python.False, "stringArrayArray": [[1]]]]),
         ]
-        
+
         for decodeFailureObject in decodeFailureObjects {
             XCTAssertThrowsError(try Self.decodeTestStruct(decodeFailureObject))
         }
