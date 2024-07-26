@@ -16,7 +16,7 @@ extension PythonCodableTests {
             struct SubSubStruct: Codable, Equatable {
                 let string: String
             }
-            
+
             let bool: Bool
             let string: String?
             let double: Double?
@@ -25,7 +25,7 @@ extension PythonCodableTests {
             let intArray: Array<Int>?
             let stringArrayArray: Array<Array<String?>>?
             let subSubStruct: SubSubStruct?
-            
+
             init(
                 bool: Bool,
                 string: String? = nil,
@@ -45,12 +45,12 @@ extension PythonCodableTests {
                 self.subSubStruct = subSubStruct
             }
         }
-        
+
         let int: Int
         let string: String?
         let bool: Bool?
         let subStruct: SubStruct?
-        
+
         init(
             int: Int,
             string: String? = nil,
@@ -60,6 +60,18 @@ extension PythonCodableTests {
             self.string = string
             self.bool = bool
             self.subStruct = subStruct
+        }
+    }
+
+    struct Struct2: Codable, Equatable {
+        let arrayOfStructs: [Struct]?
+        let arrayOfDicts: [[String: String]]?
+
+        init(
+            arrayOfStructs: [Struct]? = nil,
+            arrayOfDicts: [[String: String]]? = nil) {
+            self.arrayOfStructs = arrayOfStructs
+            self.arrayOfDicts = arrayOfDicts
         }
     }
 }

@@ -14,7 +14,6 @@ class Struct:
             def __init__(self, string: str):
                 self.string = string
 
-
         def __init__(
             self,
             bool: bool,
@@ -33,7 +32,7 @@ class Struct:
             self.intArray = intArray
             self.stringArrayArray = stringArrayArray
             self.subSubStruct = subSubStruct
-            
+
     def __init__(
         self,
         int: int,
@@ -44,3 +43,11 @@ class Struct:
         self.string = string
         self.bool = bool
         self.subStruct = subStruct
+
+class Struct2:
+    def __init__(
+        self,
+        arrayOfStructs: List[Struct] = None,
+        arrayOfDicts: List[Dict[str, str]] = None):
+        self.arrayOfStructs = arrayOfStructs
+        self.arrayOfDicts = arrayOfDicts
