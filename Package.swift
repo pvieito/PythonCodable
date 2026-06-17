@@ -14,8 +14,8 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "git@github.com:pvieito/FoundationKit.git", branch: "master"),
-        .package(url: "git@github.com:pvieito/PythonKit.git", branch: "master"),
+        .package(url: "git@github.com:pvieito/FoundationKit.git", branch: "main"),
+        .package(url: "git@github.com:pvieito/PythonKit.git", branch: "main"),
         .package(url: "https://github.com/tattn/MoreCodable.git", branch: "master"),
     ],
     targets: [
