@@ -1,11 +1,11 @@
-// swift-tools-version:5.7
+// swift-tools-version:6.2
 
 import PackageDescription
 
 let package = Package(
     name: "PythonCodable",
     platforms: [
-        .macOS(.v11)
+        .macOS(.v26),
     ],
     products: [
         .library(
@@ -21,13 +21,21 @@ let package = Package(
     targets: [
         .target(
             name: "PythonCodable",
-            dependencies: ["PythonKit", "MoreCodable"],
+            dependencies: [
+                "PythonKit",
+                "MoreCodable",
+            ],
             path: "PythonCodable"
         ),
         .testTarget(
             name: "PythonCodableTests",
-            dependencies: ["PythonCodable", "PythonKit", "FoundationKit"],
+            dependencies: [
+                "PythonCodable",
+                "PythonKit",
+                "FoundationKit",
+            ],
             resources: [.process("Resources")]
         )
-    ]
+    ],
+    swiftLanguageModes: [.v5]
 )

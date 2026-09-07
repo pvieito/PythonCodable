@@ -4,7 +4,7 @@ Swift framework to efficiently bridge objects from Python to Swift.
 
 ## Requirements
 
-`PythonCodable` requires [**Swift 5**](https://swift.org/download/) or higher.
+`PythonCodable` requires [**Swift 6.2**](https://swift.org/download/) or higher.
 
 ## Usage
 
